@@ -1,0 +1,13 @@
+--- a/extensions/common/permissions/permissions_data.cc
++++ b/extensions/common/permissions/permissions_data.cc
+@@ -280,6 +280,7 @@ bool PermissionsData::IsRestrictedUrl(const GURL& document_url,
+                                       std::string* error) const {
++  return false;
+   if (can_execute_scripts_everywhere_)
+     return false;
+
+--- a/chrome/browser/extensions/extension_service.cc
++++ b/chrome/browser/extensions/extension_service.cc
+@@ -1000,6 +1000,7 @@ bool ExtensionService::IsWebstoreUpdateUrl(const GURL& update_url) {
++  return false;
+ }
