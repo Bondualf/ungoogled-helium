@@ -2,9 +2,6 @@ name: Build Ungoogled Helium
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
 
 jobs:
   build:
@@ -22,43 +19,47 @@ jobs:
           python-version: '3.11'
 
       - name: Install depot_tools
+        shell: cmd
         run: |
-          cd %TEMP%
+          cd /d %TEMP%
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-          echo "%TEMP%\depot_tools" >> %GITHUB_PATH%
+          echo %TEMP%\depot_tools>>%GITHUB_PATH%
 
-      - name: Fetch Helium / Chromium sources
+      - name: Fetch Chromium sources
+        shell: cmd
         run: |
           set DEPOT_TOOLS_WIN_TOOLCHAIN=0
-          mkdir %TEMP%\build
-          cd /d %TEMP%\build
+          if not exist C:\build mkdir C:\build
+          cd /d C:\build
           fetch --no-history chromium
 
-      - name: Apply Unbinding Patch
+      - name: Apply Patch
+        shell: cmd
         run: |
-          cd /d %TEMP%\build\src
-          git apply --ignore-whitespace %GITHUB_WORKSPACE%/patches/remove_restrictions.patch
+          cd /d C:\build\src
+          git apply --ignore-whitespace %GITHUB_WORKSPACE%\patches\remove_restrictions.patch
 
       - name: Generate Build Files (GN)
+        shell: cmd
         run: |
-          cd /d %TEMP%\build\src
+          cd /d C:\build\src
           gn gen out/Release "--args=is_debug=false is_official_build=true symbol_level=0 blink_symbol_level=0"
 
-      - name: Compile Browser (Ninja)
+      - name: Compile Browser
+        shell: cmd
         run: |
-          cd /d %TEMP%\build\src
+          cd /d C:\build\src
           autoninja -C out/Release chrome
 
       - name: Pack Artifacts
+        shell: cmd
         run: |
-          mkdir %GITHUB_WORKSPACE%\dist
-          xcopy %TEMP%\build\src\out\Release\chrome.exe %GITHUB_WORKSPACE%\dist\
-          xcopy %TEMP%\build\src\out\Release\*.dll %GITHUB_WORKSPACE%\dist\ /S /Y
-          cd /d %GITHUB_WORKSPACE%\dist
-          powershell Compress-Archive -Path * -DestinationPath %GITHUB_WORKSPACE%\ungoogled-helium-win64.zip
+          if not exist %GITHUB_WORKSPACE%\dist mkdir %GITHUB_WORKSPACE%\dist
+          copy C:\build\src\out\Release\chrome.exe %GITHUB_WORKSPACE%\dist\
+          powershell Compress-Archive -Path %GITHUB_WORKSPACE%\dist\* -DestinationPath %GITHUB_WORKSPACE%\ungoogled-helium-win64.zip
 
-      - name: Upload Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: ungoogled-helium-win64.zip
+          name: ungoogled-helium-win64
+          path: ungoogled-helium-win64.zip
