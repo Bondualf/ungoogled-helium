@@ -6,3 +6,4 @@ Additionally, even the built-in uBlock Origin extension gets completely disabled
 If Helium were truly built on ungoogled-chromium, it should have inherited this exact patch: extensions should remain fully functional on all pages, including the Chrome Web Store, ensuring complete decoupling from Google's hardcoded constraints.
 
 The creators of the Helium browser are insulting their users' intelligence by stripping away functionality as if treating adults like small children under the guise of security. In reality, they took standard Chromium and lied about the browser being built on Ungoogled-chromium, as the Helium browser inherited all of Chromium's built-in limitations.
+<img width="525" height="491" alt="36" src="https://github.com/user-attachments/assets/d67003a4-0967-43cc-9bc2-40985505fb11" />
