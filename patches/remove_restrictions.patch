@@ -1,3 +1,7 @@
+From: Bondualf <bondualf@users.noreply.github.com>
+Date: Sat, 8 Aug 2026 00:00:00 +0000
+Subject: Remove chrome webstore restrictions
+
 --- a/extensions/common/permissions/permissions_data.cc
 +++ b/extensions/common/permissions/permissions_data.cc
 @@ -280,6 +280,7 @@ bool PermissionsData::IsRestrictedUrl(const GURL& document_url,
